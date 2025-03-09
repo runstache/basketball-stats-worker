@@ -58,7 +58,7 @@ no-docstring-rgx = "^(?:test|mock)?_"
 max-args = 7
 
 # Maximum number of attributes for a class (see R0902). (default: 7)
-max-attributes = 9
+max-attributes = 25
 
 # Maximum number of boolean expressions in an if statement (see R0916).
 max-bool-expr = 5

@@ -5,7 +5,6 @@ Services for working with Stats retrieval.
 import logging
 import os
 import posixpath
-from importlib.metadata import always_iterable
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -88,7 +87,7 @@ class TeamService(BaseService):
     """
 
     def _extract_stats_(self, game_id: str, team: dict,
-                        opponent: dict, stats: dict) -> list[TeamStatistic]:
+                        opponent: dict, stats: dict) -> list:
         """
         Extracts the Statistics for a Team
         :param game_id: Game Id
@@ -122,8 +121,12 @@ class TeamService(BaseService):
         url = self._build_url_(parts)
 
         payload = self.get_stats_payload(url)
-        game_info = payload.get('page', {}).get('content', {}).get('gamepackage', {}).get('gmStrp',
-                                                                                          {})
+        if not payload:
+            return []
+        game_info = payload.get('page', {}) \
+            .get('content', {}) \
+            .get('gamepackage', {}) \
+            .get('gmStrp', {})
         stats = payload.get('page', {}).get('content', {}).get('gamepackage', {}).get('tmStats', {})
 
         home = stats.get('home', {})
@@ -154,7 +157,7 @@ class PlayerService(BaseService):
     Services for retrieving the Player Level Statistics
     """
 
-    def _build_stats_(self, team: dict, opponent: dict, stats: list[dict]) -> list[PlayerStatistic]:
+    def _build_stats_(self, team: dict, opponent: dict, stats: list[dict]) -> list:
         """
         Extracts the Player stats from the object
         :param team: Team Info
@@ -173,18 +176,18 @@ class PlayerService(BaseService):
                 values = athlete.get('stats', [])
 
                 stat_values = zip(labels, values)
-                stat = PlayerStatistic(
+                item = PlayerStatistic(
                     player_url=player.get('lnk'),
                     player_name=player.get('dspNm'),
                     team=team.get('dspNm'),
                     opponent=opponent.get('dspNm')
                 )
                 for stat_value in stat_values:
-                    result.extend(self._explode_stat_(stat, stat_value))
+                    result.extend(self._explode_stat_(item, stat_value))
 
         return result
 
-    def get_stats(self, game_id: str) -> list[PlayerStatistic]:
+    def get_stats(self, game_id: str) -> list:
         """
         Retrieves the statistics for the provided Game ID.
         :param game_id: Game ID
@@ -194,10 +197,12 @@ class PlayerService(BaseService):
         url = self._build_url_(parts)
         payload = self.get_stats_payload(url)
 
+        if not payload:
+            return []
         stats = []
 
         bxscore = payload.get('page', {}).get('content', {}).get('gamepackage', {}).get('bxscr', [])
-        if not bxscore and len(bxscore) < 2:
+        if not bxscore or len(bxscore) < 2:
             return []
 
         away_stats = bxscore[0]
@@ -226,6 +231,8 @@ class GameService(BaseService):
         url = self._build_url_(parts)
 
         payload = self.get_stats_payload(url)
+        if not payload:
+            return None
 
         pkg = payload.get('page', {}).get('content', {}).get('gamepackage', {})
 
@@ -251,6 +258,7 @@ class GameService(BaseService):
             line=gm_info.get('lne'),
             over_under=float(gm_info.get('ovUnd', 0))
         )
+
 
 class ScheduleService(BaseService):
     """
@@ -285,7 +293,7 @@ class ScheduleService(BaseService):
     def get_schedule(self, *, week: int = 0, year: int = 0,
                      game_type: int = 0,
                      date: str | None = None,
-                     group: str = None) -> list[Schedule]:
+                     group: str | None = None) -> list[Schedule]:
         """
         Retrieves the Schedule information for the week, year, and type
         :keyword week: Week Number
@@ -299,13 +307,13 @@ class ScheduleService(BaseService):
         parts = ['schedule', '_']
         if week:
             parts.append('week')
-            parts.append(week)
+            parts.append(str(week))
         if year:
             parts.append('year')
-            parts.append(year)
+            parts.append(str(year))
         if game_type:
             parts.append('seasontype')
-            parts.append(game_type)
+            parts.append(str(game_type))
         if date:
             parts.append('date')
             parts.append(date)

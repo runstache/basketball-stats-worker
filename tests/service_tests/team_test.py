@@ -26,3 +26,13 @@ def test_team_get_stats(team_service, monkeypatch, team):
                   ('/womens-college-basketball/team/_/id/2579/south-carolina-gamecocks',
                    'South Carolina Gamecocks', 'Michigan Wolverines', None, 'fieldGoalsAttempted',
                    75.0, '401713576'))
+
+
+def test_get_stats_no_payload(team_service, monkeypatch):
+    """
+    Test the Team Service without a payload returned
+    """
+
+    monkeypatch.setattr(team_service, 'get_stats_payload', lambda *args: None)
+    result = team_service.get_stats('123456')
+    assert_that(result).is_empty()

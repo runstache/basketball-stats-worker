@@ -16,7 +16,7 @@ class BaseEntity:
     year: int = 0
     game_type: int = 0
 
-    def copy(self, *, update: dict | None=None):
+    def copy(self, *, update: dict | None = None):
         """
         Creates a deep copy of the entity and performs an update of the provided fields
         :keyword update: Dictionary of keys to update
