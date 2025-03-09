@@ -3,7 +3,16 @@ Data Entities Module
 """
 import copy
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, NamedTuple
+
+
+class GameType(NamedTuple):
+    """
+    Game Type
+    """
+
+    type_id: int
+    game_type: str
 
 
 @dataclass

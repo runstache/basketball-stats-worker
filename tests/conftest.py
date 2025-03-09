@@ -3,11 +3,12 @@ Pytest Fixtures
 """
 
 import json
-
+import os
 import pytest
+from boto3 import Session
 
-from data.entities import Schedule
 from services.stats import ScheduleService, TeamService, GameService, PlayerService
+from moto import mock_aws
 
 
 @pytest.fixture
@@ -71,3 +72,33 @@ def player_service() -> PlayerService:
     Registers a Player Service
     """
     return PlayerService('http://locahost/player')
+
+
+@pytest.fixture
+def credentials() -> None:
+    """
+    Sets default credentials
+    """
+
+    os.environ['AWS_ACCESS_KEY_ID'] = 'testing'
+    os.environ['AWS_SECRET_ACCESS_KEY'] = 'testing'
+    os.environ['AWS_SESSION_TOKEN'] = 'testing'
+
+@pytest.fixture
+def session(credentials):
+    """
+    Creates the mock session
+    """
+    with mock_aws():
+        session = Session()
+        yield session
+
+
+@pytest.fixture
+def s3(session):
+    """
+    Creates the S3 Buckets
+    """
+
+    client = session.client('s3')
+    client.create_bucket(Bucket='test-bucket')
