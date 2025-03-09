@@ -1,0 +1,108 @@
+[project]
+name = "basketball-stats-worker"
+version = "0.1.0"
+requires-python = ">=3.12.5"
+dependencies = [
+    "boto3>=1.36.26",
+    "fake-user-agent>=2.3.9",
+    "polars>=1.23.0",
+    "pyarrow>=19.0.1",
+    "selenium>=4.29.0",
+]
+
+[dependency-groups]
+dev = [
+    "assertpy>=1.1",
+    "bandit>=1.8.3",
+    "flake8>=7.1.2",
+    "flake8-bugbear>=24.12.12",
+    "mypy>=1.15.0",
+    "pycodestyle>=2.12.1",
+    "pyflakes>=3.2.0",
+    "pylint>=3.3.4",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/runstache/football-stats-warehouse"
+"Bug Tracker" = "https://github.com/runstache/football-stats-warehouse/issues"
+
+[tool.pytest.ini_options]
+pythonpath="src"
+
+[tool.pylint.main]
+source-roots=["src"]
+
+# Removes the Issue with loading the Models Module in Pylint scan.
+disable = "E0401"
+
+# Specify a score threshold under which the program will exit with error.
+fail-under = 9.75
+
+# Files or directories to be skipped. They should be base names, not paths.
+ignore = ["config"]
+
+ignore-patterns = ["^\\.#"]
+jobs = 0
+
+# Pickle collected data for later comparisons.
+persistent = true
+py-version = "3.12"
+
+[tool.pylint.basic]
+no-docstring-rgx = "^(?:test|mock)?_"
+
+[tool.pylint.design]
+# Maximum number of arguments for function / method. (default: 5)
+max-args = 7
+
+# Maximum number of attributes for a class (see R0902). (default: 7)
+max-attributes = 9
+
+# Maximum number of boolean expressions in an if statement (see R0916).
+max-bool-expr = 5
+
+# Maximum number of branch for function / method body.
+max-branches = 12
+
+# Maximum number of locals for function / method body.
+max-locals = 15
+
+# Maximum number of parents for a class (see R0901).
+max-parents = 7
+
+# Maximum number of public methods for a class (see R0904).
+max-public-methods = 20
+
+# Maximum number of return / yield for function / method body.
+max-returns = 6
+
+# Maximum number of statements in function / method body.
+max-statements = 50
+
+# Minimum number of public methods for a class (see R0903). (default: 2)
+min-public-methods = 0
+
+[tool.pylint.logging]
+logging-format-style = "old"
+logging-modules = ["logging"]
+
+[tool.pylint.miscellaneous]
+# List of note tags to take in consideration, separated by a comma.
+notes = ["FIXME", "XXX", "TODO"]
+
+[tool.pylint.refactoring]
+# Maximum number of nested blocks for function / method body
+max-nested-blocks = 5
+
+never-returning-functions = ["sys.exit", "argparse.parse_error"]
+
+[tool.pylint.reports]
+evaluation = "max(0, 0 if fatal else 10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10))"
+# Activate the evaluation score.
+score = true
+
+[mypy]
+mypy_path = "src/"
+

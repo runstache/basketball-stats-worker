@@ -1,2 +1,3 @@
-# basketball-stats-worker
-Worker application for extracting basketball stats
+# College Basketball Stats Worker
+
+Worker application for extracting Collect Basketball stats
