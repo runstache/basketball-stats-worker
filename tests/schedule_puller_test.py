@@ -50,3 +50,11 @@ def test_write_failure(s3, monkeypatch, schedule):
 
     assert_that(schedule_puller.main).raises(ClientError).when_called_with('test-bucket-2',
                                                                            **{'date': '20240101'})
+
+def test_make_key():
+    """
+    Tests making the key
+    """
+
+    result = schedule_puller.make_key(1,2020,1,None)
+    assert_that(result).starts_with('schedule/2020/preseason/1/')

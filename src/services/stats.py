@@ -282,12 +282,14 @@ class ScheduleService(BaseService):
             return None
 
         return Schedule(
-            game_id=event.get('id'),
+            game_id=event.get('id', ''),
             home_team_code=home_team[0].get('abbrev'),
             away_team_code=away_team[0].get('abbrev'),
             home_team_name=home_team[0].get('displayName'),
             away_team_name=away_team[0].get('displayName'),
             game_date=event.get('date'),
+            year=event.get('season', {}).get('year', 0),
+            game_type=event.get('season', {}).get('type', 0)
         )
 
     def get_schedule(self, *, week: int = 0, year: int = 0,

@@ -82,7 +82,7 @@ class Schedule(BaseEntity):
     Schedule Data Entity
     """
 
-    game_id: Optional[str] = None
+    game_id: str = ''
     home_team_code: Optional[str] = None
     away_team_code: Optional[str] = None
     home_team_name: Optional[str] = None

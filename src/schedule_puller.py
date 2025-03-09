@@ -7,6 +7,7 @@ import os
 import posixpath
 import sys
 import uuid
+from datetime import datetime
 from io import BytesIO
 
 import polars
@@ -30,6 +31,18 @@ def create_client(session: Session) -> BaseClient:
     return session.client('s3')
 
 
+def get_season_types() -> dict:
+    """
+    Returns the Season Type Hash
+    :return: Dictionary
+    """
+    return {
+        1: 'preseason',
+        2: 'regular',
+        3: 'postseason'
+    }
+
+
 def write_output(bucket: str, key: str, records: list[Schedule], session: Session) -> None:
     """
     Writes the Schedule records to S3 Parquet
@@ -50,6 +63,39 @@ def write_output(bucket: str, key: str, records: list[Schedule], session: Sessio
     except ClientError as ex:
         logging.error('Failed to write records to bucket: %s : %s', key, ex.args)
         raise ex
+
+
+def make_key(week: int = 0, year: int = 0, season: int = 0, date: str | None = None) -> str:
+    """
+    Creates an S3 Key for the Parquet File
+    :param week: Week Number
+    :param year: Season Year
+    :param season: Season Number
+    :param date: Date value
+    :return: S3 Key
+    """
+    parts = []
+    file_name = None
+    seasons = get_season_types()
+    if date:
+        date_value = datetime.strptime(date, '%Y%m%d')
+        if not year:
+            parts.append(str(date_value.year))
+        if not week:
+            parts.append(str(date_value.isocalendar()[1]))
+        file_name = f"{date}.parquet"
+
+    if year:
+        parts.append(str(year))
+    if season:
+        parts.append(str(seasons[season]))
+    if week:
+        parts.append(str(week))
+
+    if not file_name:
+        file_name = f"schedule-{uuid.uuid4()}.parquet"
+    parts.append(file_name)
+    return posixpath.join('schedule', *parts)
 
 
 def main(bucket: str, *, week: int = 0, year: int = 0, season: int = 0, group: str | None = None,
@@ -81,10 +127,7 @@ def main(bucket: str, *, week: int = 0, year: int = 0, season: int = 0, group: s
     results = [x.copy(update={'week': week, 'year': year, 'game_type': season}) for x in results]
     logging.info('Outputting Schedule File...(%s)', len(results))
 
-    file_name = f"{uuid.uuid4()}.parquet"
-    if date:
-        file_name = f"{date}-{file_name}"
-    key = posixpath.join('schedule', str(week), str(year), file_name)
+    key = make_key(week=week, year=year, season=season, date=date)
     write_output(bucket, key, results, session)
     logging.info('Done')
 
@@ -102,7 +145,7 @@ if __name__ == '__main__':
                         help='Week of schedule')
     parser.add_argument('-s', '--season', type=int, required=False, default=0,
                         help='Season Type of Schedule')
-    parser.add_argument('-g', '--group', type=int, required=False, default=0,
+    parser.add_argument('-g', '--group', type=str, required=False, default=0,
                         help='Group Type of Schedule')
     parser.add_argument('-d', '--date', type=str, required=False, help='Start Date of Schedule')
     args = parser.parse_args()

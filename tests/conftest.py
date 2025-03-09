@@ -43,6 +43,7 @@ def team() -> dict:
         content = json.load(input)
         return content
 
+
 @pytest.fixture(scope='module')
 def schedule_service() -> ScheduleService:
     """
@@ -50,6 +51,7 @@ def schedule_service() -> ScheduleService:
     """
 
     return ScheduleService('http://locahost/schedule')
+
 
 @pytest.fixture(scope='module')
 def team_service() -> TeamService:
@@ -59,12 +61,14 @@ def team_service() -> TeamService:
 
     return TeamService('http://locahost/team')
 
+
 @pytest.fixture(scope='module')
 def game_service() -> GameService:
     """
     Registers a Game Service
     """
     return GameService('http://locahost/game')
+
 
 @pytest.fixture(scope='module')
 def player_service() -> PlayerService:
@@ -84,6 +88,7 @@ def credentials() -> None:
     os.environ['AWS_SECRET_ACCESS_KEY'] = 'testing'
     os.environ['AWS_SESSION_TOKEN'] = 'testing'
 
+
 @pytest.fixture
 def session(credentials):
     """
@@ -102,3 +107,16 @@ def s3(session):
 
     client = session.client('s3')
     client.create_bucket(Bucket='test-bucket')
+
+
+@pytest.fixture
+def schedule_file(s3, session):
+    """
+    Stages the Schedule file to S3
+    """
+
+    with open('./tests/test_files/20241201.parquet', 'rb') as input:
+        content = input.read()
+
+    client = session.client('s3')
+    client.put_object(Bucket='test-bucket', Key='schedule/20241201.parquet', Body=content)
