@@ -69,7 +69,7 @@ def main(bucket: str, *, week: int = 0, year: int = 0, season: int = 0, group: s
         logging.error('Bucket Name Required')
         sys.exit(1)
 
-    base_url = os.getenv('BASE_URL')
+    base_url = os.getenv('BASE_URL', '')
     logging.info('Retrieving Schedule....(%s)', base_url)
     service = ScheduleService(base_url)
     session = Session(region_name='us-east-1')
