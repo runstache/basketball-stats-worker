@@ -149,15 +149,18 @@ def main(bucket: str, schedule_key: str) -> None:
 
     # Write the Frames
     logging.info('Writing Output Files...')
-    player_file_name = make_key('players.parquet', 'players', schedule.week, schedule.year,
+    player_file_name = make_key(f"players-{os.path.basename(schedule_key)}", 'players',
+                                schedule.week, schedule.year,
                                 schedule.game_type)
     write_output(bucket, player_file_name, player_stats, session)
 
-    game_file_name = make_key('games.parquet', 'games', schedule.week, schedule.year,
+    game_file_name = make_key(f"games-{os.path.basename(schedule_key)}", 'games', schedule.week,
+                              schedule.year,
                               schedule.game_type)
     write_output(bucket, game_file_name, games, session)
 
-    team_file_name = make_key('teams.parquet', 'teams', schedule.week, schedule.year,
+    team_file_name = make_key(f"teams-{os.path.basename(schedule_key)}", 'teams', schedule.week,
+                              schedule.year,
                               schedule.game_type)
     write_output(bucket, team_file_name, team_stats, session)
 
