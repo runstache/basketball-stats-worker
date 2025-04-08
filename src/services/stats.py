@@ -74,9 +74,12 @@ class BaseService:
         items = zip(names, values)
 
         for item in items:
+            value = item[1]
+            if not value:
+                value = 0
             stats.append(
                 stat.copy(update={'statistic_name': item[0],
-                                  'statistic_value': float(item[1])}))
+                                  'statistic_value': float(value)}))
 
         return stats
 
