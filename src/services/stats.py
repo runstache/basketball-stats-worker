@@ -70,6 +70,12 @@ class BaseService:
         :return: List of Statistics
         """
 
+        # Handle Time values to seconds
+        if ':' in entry[1]:
+            parts = entry[1].split(':')
+            value = (int(parts[0]) * 60) + int(parts[1])
+            return [stat.copy(update={'statistic_name': entry[0], 'statistic_value': value})]
+
         pattern = r'[-/]'
         names = re.split(pattern, entry[0])
         values = re.split(pattern, entry[1])

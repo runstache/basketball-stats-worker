@@ -106,3 +106,16 @@ def test_explode_stat_slash_delimiter(player_service):
     assert_that(
         [x for x in result if x.statistic_name == 'PT' and x.statistic_value == 4]
     ).is_not_empty()
+
+
+def test_explode_stat_time(player_service):
+    """
+    Tests exploding a stat with a time delimiter
+    """
+    stat = PlayerStatistic(1, 2023, 2, 'Bull Dogs', 'Shepherds', 'PA', 'test stat', 'tst')
+    result = player_service._explode_stat_(stat, ('TP', '1:20'))
+    assert_that(result).is_not_empty().is_length(1)
+
+    assert_that(
+        [x for x in result if x.statistic_name == 'TP' and x.statistic_value == 80]
+    ).is_not_empty()
