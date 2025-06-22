@@ -88,7 +88,7 @@ wheels = [
 
 [[package]]
 name = "basketball-stats-worker"
-version = "1.0.1"
+version = "1.1.1"
 source = { virtual = "." }
 dependencies = [
     { name = "boto3" },
