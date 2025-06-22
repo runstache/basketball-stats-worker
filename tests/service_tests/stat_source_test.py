@@ -1,6 +1,7 @@
 """
 Tests the Source is still accurate.
 """
+
 import json
 
 import pytest
@@ -14,6 +15,7 @@ SCHEDULE_URL = 'https://www.espn.com/womens-college-basketball/schedule/_/date/2
 
 BASE_URL = 'https://www.espn.com/womens-college-basketball'
 
+
 @pytest.fixture(scope='module')
 def browser() -> BaseService:
     """
@@ -23,7 +25,7 @@ def browser() -> BaseService:
     return BaseService(BASE_URL)
 
 
-def write_output(path:str, payload:dict) -> None:
+def write_output(path: str, payload: dict) -> None:
     """
     Writes the Payload Output
     :param path: File Path
@@ -34,6 +36,7 @@ def write_output(path:str, payload:dict) -> None:
     with open(path, 'w', encoding='utf-8') as output_file:
         json.dump(payload, output_file)
 
+
 def test_get_box_score(browser):
     """
     Tests retrieving the Boxscore information
@@ -43,10 +46,10 @@ def test_get_box_score(browser):
     result = browser.get_stats_payload(url)
     assert_that(result).is_not_none()
 
-    assert_that(result.get('page', {})
-                .get('content', {})
-                .get('gamepackage', {})
-                .get('bxscr', {})).is_not_empty()
+    assert_that(
+        result.get('page', {}).get('content', {}).get('gamepackage', {}).get('bxscr', {})
+    ).is_not_empty()
+
 
 def test_get_team_stats(browser):
     """
@@ -57,14 +60,14 @@ def test_get_team_stats(browser):
     result = browser.get_stats_payload(url)
     assert_that(result).is_not_none()
 
-    assert_that(result.get('page', {}).get('content', {}).get('gamepackage', {})) \
-        .is_not_empty()
+    assert_that(result.get('page', {}).get('content', {}).get('gamepackage', {})).is_not_empty()
+
 
 def test_get_schedule(browser):
     """
     Tests retrieving the Schedule information.
     """
-    url = browser._build_url_(['schedule','_','date','20241202','group','50'])
+    url = browser._build_url_(['schedule', '_', 'date', '20241202', 'group', '50'])
     result = browser.get_stats_payload(url)
     assert_that(result).is_not_none()
     assert_that(result.get('page', {}).get('content', {}).get('events', {})).is_not_empty()

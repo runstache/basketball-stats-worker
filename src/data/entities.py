@@ -1,9 +1,10 @@
 """
 Data Entities Module
 """
+
 import copy
 from dataclasses import dataclass
-from typing import Optional, NamedTuple
+from typing import NamedTuple
 
 
 class GameType(NamedTuple):
@@ -48,13 +49,14 @@ class BaseStatistic(BaseEntity):
     """
     Base Statistic Data Entity
     """
-    team: Optional[str] = None
-    opponent: Optional[str] = None
-    statistic_type: Optional[str] = None
-    statistic_name: Optional[str] = None
-    statistic_code: Optional[str] = None
+
+    team: str | None = None
+    opponent: str | None = None
+    statistic_type: str | None = None
+    statistic_name: str | None = None
+    statistic_code: str | None = None
     statistic_value: float = 0
-    game_id: Optional[str] = None
+    game_id: str | None = None
 
 
 @dataclass
@@ -63,7 +65,7 @@ class TeamStatistic(BaseStatistic):
     Team level statistics class
     """
 
-    team_url: Optional[str] = None
+    team_url: str | None = None
 
 
 @dataclass
@@ -72,8 +74,8 @@ class PlayerStatistic(BaseStatistic):
     Player Level Statistic Data Entity
     """
 
-    player_name: Optional[str] = None
-    player_url: Optional[str] = None
+    player_name: str | None = None
+    player_url: str | None = None
 
 
 @dataclass
@@ -83,11 +85,11 @@ class Schedule(BaseEntity):
     """
 
     game_id: str = ''
-    home_team_code: Optional[str] = None
-    away_team_code: Optional[str] = None
-    home_team_name: Optional[str] = None
-    away_team_name: Optional[str] = None
-    game_date: Optional[str] = None
+    home_team_code: str | None = None
+    away_team_code: str | None = None
+    home_team_name: str | None = None
+    away_team_name: str | None = None
+    game_date: str | None = None
 
 
 @dataclass
@@ -96,16 +98,16 @@ class Game(BaseEntity):
     Game Info Data Entity
     """
 
-    game_id: Optional[str] = None
-    home_team: Optional[str] = None
-    away_team: Optional[str] = None
-    location: Optional[str] = None
-    city: Optional[str] = None
-    state: Optional[str] = None
-    game_date: Optional[str] = None
+    game_id: str | None = None
+    home_team: str | None = None
+    away_team: str | None = None
+    location: str | None = None
+    city: str | None = None
+    state: str | None = None
+    game_date: str | None = None
     is_conference: bool = False
-    note: Optional[str] = None
+    note: str | None = None
     home_score: int = 0
     away_score: int = 0
-    line: Optional[str] = None
+    line: str | None = None
     over_under: float = 0

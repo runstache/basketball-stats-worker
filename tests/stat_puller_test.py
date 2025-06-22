@@ -7,7 +7,7 @@ from polars import DataFrame
 
 import stats_puller
 from data.entities import Schedule
-from services.stats import PlayerService, TeamService, GameService
+from services.stats import GameService, PlayerService, TeamService
 from stats_puller import ClientError
 
 
@@ -42,9 +42,9 @@ def test_pull_schedule_failure(monkeypatch, boxscore, team, session, schedule_fi
     monkeypatch.setattr(TeamService, 'get_stats_payload', lambda *args: team)
     monkeypatch.setattr(GameService, 'get_stats_payload', lambda *args: team)
 
-    assert_that(stats_puller.main) \
-        .raises(ClientError) \
-        .when_called_with('test-bucket-2', 'schedule/20241201.parquet')
+    assert_that(stats_puller.main).raises(ClientError).when_called_with(
+        'test-bucket-2', 'schedule/20241201.parquet'
+    )
 
 
 def test_write_failure(monkeypatch, boxscore, team, session, schedule_file):
@@ -56,11 +56,13 @@ def test_write_failure(monkeypatch, boxscore, team, session, schedule_file):
     monkeypatch.setattr(PlayerService, 'get_stats_payload', lambda *args: boxscore)
     monkeypatch.setattr(TeamService, 'get_stats_payload', lambda *args: team)
     monkeypatch.setattr(GameService, 'get_stats_payload', lambda *args: team)
-    monkeypatch.setattr(stats_puller, 'load_schedule', lambda *args: DataFrame([Schedule(game_id='12345')]))
+    monkeypatch.setattr(
+        stats_puller, 'load_schedule', lambda *args: DataFrame([Schedule(game_id='12345')])
+    )
 
-    assert_that(stats_puller.main) \
-        .raises(ClientError) \
-        .when_called_with('test-bucket-2', 'schedule/20241201.parquet')
+    assert_that(stats_puller.main).raises(ClientError).when_called_with(
+        'test-bucket-2', 'schedule/20241201.parquet'
+    )
 
 
 def test_build_key():
@@ -68,8 +70,9 @@ def test_build_key():
     Tests building the S3 Key
     """
 
-    result = stats_puller.make_key('test.parquet', 'players', 1,2020,3)
+    result = stats_puller.make_key('test.parquet', 'players', 1, 2020, 3)
     assert_that(result).is_equal_to('players/2020/postseason/1/test.parquet')
+
 
 def test_no_bucket_or_schedule():
     """

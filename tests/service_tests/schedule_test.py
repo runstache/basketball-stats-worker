@@ -3,6 +3,7 @@ Tests for the schedule service
 """
 
 from assertpy import assert_that
+
 from services.stats import ScheduleService
 
 
@@ -15,11 +16,16 @@ def test_get_schedule(monkeypatch, schedule, schedule_service):
     result = schedule_service.get_schedule()
     assert_that(result).is_not_empty()
 
-    assert_that(result) \
-        .extracting('game_id', 'home_team_code', 'away_team_code',
-                    'home_team_name', 'away_team_name', 'game_date') \
-        .contains(
-        ('401724075', 'HAW', 'UCLA', "Hawai'i Rainbow Wahine", 'UCLA Bruins', '2024-12-02T00:30Z'))
+    assert_that(result).extracting(
+        'game_id',
+        'home_team_code',
+        'away_team_code',
+        'home_team_name',
+        'away_team_name',
+        'game_date',
+    ).contains(
+        ('401724075', 'HAW', 'UCLA', "Hawai'i Rainbow Wahine", 'UCLA Bruins', '2024-12-02T00:30Z')
+    )
 
 
 def test_event_empty(schedule_service):
@@ -50,12 +56,25 @@ def test_get_schedule_all_args(monkeypatch, schedule_service):
         Mock function for checking the url pieces
         """
 
-        assert_that(parts).contains('1', '2', '20240101', '50', 'week', 'seasontype', 'schedule', '_',
-                                    'year', 'date', 'group', '2020')
+        assert_that(parts).contains(
+            '1',
+            '2',
+            '20240101',
+            '50',
+            'week',
+            'seasontype',
+            'schedule',
+            '_',
+            'year',
+            'date',
+            'group',
+            '2020',
+        )
 
     monkeypatch.setattr(ScheduleService, 'get_stats_payload', lambda *args: None)
     monkeypatch.setattr(ScheduleService, '_build_url_', _mock_url)
 
-    result = schedule_service.get_schedule(week=1, game_type=2, date='20240101', group='50',
-                                           year=2020)
+    result = schedule_service.get_schedule(
+        week=1, game_type=2, date='20240101', group='50', year=2020
+    )
     assert_that(result).is_empty()

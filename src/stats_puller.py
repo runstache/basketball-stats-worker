@@ -1,6 +1,7 @@
 """
 Script for retrieving Statistics and storing in S3
 """
+
 import argparse
 import logging
 import os
@@ -15,7 +16,7 @@ from botocore.exceptions import ClientError
 from polars import DataFrame
 
 from data.entities import Schedule
-from services.stats import PlayerService, TeamService, GameService
+from services.stats import GameService, PlayerService, TeamService
 
 
 def create_client(session: Session) -> BaseClient:
@@ -34,14 +35,16 @@ def get_season_types() -> dict:
     Returns the Season Type Hash
     :return: Dictionary
     """
-    return {
-        1: 'preseason',
-        2: 'regular',
-        3: 'postseason'
-    }
+    return {1: 'preseason', 2: 'regular', 3: 'postseason'}
 
 
-def make_key(file_name: str, category: str, week: int = 0, year: int = 0, season: int = 0, ) -> str:
+def make_key(
+    file_name: str,
+    category: str,
+    week: int = 0,
+    year: int = 0,
+    season: int = 0,
+) -> str:
     """
     Creates an S3 Key for the Parquet File
     :param file_name: Name of the Parquet File
@@ -131,37 +134,48 @@ def main(bucket: str, schedule_key: str) -> None:
 
     logging.info('Retrieving Stats...(%s)', len(schedule_entries))
     for schedule in schedule_entries:
-        upd = {
-            'week': schedule.week,
-            'game_type': schedule.game_type,
-            'year': schedule.year
-        }
+        upd = {'week': schedule.week, 'game_type': schedule.game_type, 'year': schedule.year}
 
         player_stats.extend(
-            [x.copy(update=upd) for x in player_service.get_stats(schedule.game_id) if x])
+            [x.copy(update=upd) for x in player_service.get_stats(schedule.game_id) if x]
+        )
         games.extend(
-            [x.copy(update=upd) for x in [game_service.get_game_info(schedule.game_id)] if x])
+            [x.copy(update=upd) for x in [game_service.get_game_info(schedule.game_id)] if x]
+        )
         team_stats.extend(
-            [x.copy(update=upd) for x in team_service.get_stats(schedule.game_id) if x])
+            [x.copy(update=upd) for x in team_service.get_stats(schedule.game_id) if x]
+        )
 
     # Get the first Schedule for the Partitions
     schedule = schedule_entries[0]
 
     # Write the Frames
     logging.info('Writing Output Files...')
-    player_file_name = make_key(f"players-{os.path.basename(schedule_key)}", 'players',
-                                schedule.week, schedule.year,
-                                schedule.game_type)
+    player_file_name = make_key(
+        f'players-{os.path.basename(schedule_key)}',
+        'players',
+        schedule.week,
+        schedule.year,
+        schedule.game_type,
+    )
     write_output(bucket, player_file_name, player_stats, session)
 
-    game_file_name = make_key(f"games-{os.path.basename(schedule_key)}", 'games', schedule.week,
-                              schedule.year,
-                              schedule.game_type)
+    game_file_name = make_key(
+        f'games-{os.path.basename(schedule_key)}',
+        'games',
+        schedule.week,
+        schedule.year,
+        schedule.game_type,
+    )
     write_output(bucket, game_file_name, games, session)
 
-    team_file_name = make_key(f"teams-{os.path.basename(schedule_key)}", 'teams', schedule.week,
-                              schedule.year,
-                              schedule.game_type)
+    team_file_name = make_key(
+        f'teams-{os.path.basename(schedule_key)}',
+        'teams',
+        schedule.week,
+        schedule.year,
+        schedule.game_type,
+    )
     write_output(bucket, team_file_name, team_stats, session)
 
     logging.info('DONE')

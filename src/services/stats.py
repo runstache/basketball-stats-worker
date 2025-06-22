@@ -5,17 +5,19 @@ Services for working with Stats retrieval.
 import logging
 import os
 import posixpath
+import re
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
-from data.entities import TeamStatistic, PlayerStatistic, Game, Schedule, BaseStatistic
+from data.entities import BaseStatistic, Game, PlayerStatistic, Schedule, TeamStatistic
 
 
 class BaseService:
     """
     Base Service Class
     """
+
     browser: webdriver.Chrome
     logger: logging.Logger
     base_url: str
@@ -68,18 +70,19 @@ class BaseService:
         :return: List of Statistics
         """
 
-        names = entry[0].split('-')
-        values = entry[1].split('-')
+        pattern = r'[-/]'
+        names = re.split(pattern, entry[0])
+        values = re.split(pattern, entry[1])
         stats = []
-        items = zip(names, values)
+        items = zip(names, values, strict=False)
 
         for item in items:
             value = item[1]
             if not value:
                 value = 0
             stats.append(
-                stat.copy(update={'statistic_name': item[0],
-                                  'statistic_value': float(value)}))
+                stat.copy(update={'statistic_name': item[0], 'statistic_value': float(value)})
+            )
 
         return stats
 
@@ -89,8 +92,7 @@ class TeamService(BaseService):
     Service for retrieving Team Level Stats
     """
 
-    def _extract_stats_(self, game_id: str, team: dict,
-                        opponent: dict, stats: dict) -> list:
+    def _extract_stats_(self, game_id: str, team: dict, opponent: dict, stats: dict) -> list:
         """
         Extracts the Statistics for a Team
         :param game_id: Game Id
@@ -126,10 +128,9 @@ class TeamService(BaseService):
         payload = self.get_stats_payload(url)
         if not payload:
             return []
-        game_info = payload.get('page', {}) \
-            .get('content', {}) \
-            .get('gamepackage', {}) \
-            .get('gmStrp', {})
+        game_info = (
+            payload.get('page', {}).get('content', {}).get('gamepackage', {}).get('gmStrp', {})
+        )
         stats = payload.get('page', {}).get('content', {}).get('gamepackage', {}).get('tmStats', {})
 
         home = stats.get('home', {})
@@ -139,18 +140,12 @@ class TeamService(BaseService):
         home_team = home.get('t', {})
 
         results = []
-        results.extend(self._extract_stats_(
-            game_info.get('gid'),
-            home_team,
-            away_team,
-            home.get('s', {})
-        ))
-        results.extend(self._extract_stats_(
-            game_info.get('gid'),
-            away_team,
-            home_team,
-            away.get('s', {})
-        ))
+        results.extend(
+            self._extract_stats_(game_info.get('gid'), home_team, away_team, home.get('s', {}))
+        )
+        results.extend(
+            self._extract_stats_(game_info.get('gid'), away_team, home_team, away.get('s', {}))
+        )
 
         return results
 
@@ -178,12 +173,12 @@ class PlayerService(BaseService):
                 player = athlete.get('athlt', {})
                 values = athlete.get('stats', [])
 
-                stat_values = zip(labels, values)
+                stat_values = zip(labels, values, strict=False)
                 item = PlayerStatistic(
                     player_url=player.get('lnk'),
                     player_name=player.get('dspNm'),
                     team=team.get('dspNm'),
-                    opponent=opponent.get('dspNm')
+                    opponent=opponent.get('dspNm'),
                 )
                 for stat_value in stat_values:
                     result.extend(self._explode_stat_(item, stat_value))
@@ -211,10 +206,16 @@ class PlayerService(BaseService):
         away_stats = bxscore[0]
         home_stats = bxscore[1]
 
-        stats.extend(self._build_stats_(away_stats.get('tm', {}), home_stats.get('tm', {}),
-                                        away_stats.get('stats', [])))
-        stats.extend(self._build_stats_(home_stats.get('tm', {}), away_stats.get('tm', {}),
-                                        home_stats.get('stats', [])))
+        stats.extend(
+            self._build_stats_(
+                away_stats.get('tm', {}), home_stats.get('tm', {}), away_stats.get('stats', [])
+            )
+        )
+        stats.extend(
+            self._build_stats_(
+                home_stats.get('tm', {}), away_stats.get('tm', {}), home_stats.get('stats', [])
+            )
+        )
         return [x.copy(update={'game_id': game_id}) for x in stats]
 
 
@@ -259,7 +260,7 @@ class GameService(BaseService):
             home_score=int(teams.get('home', {}).get('score', 0)),
             away_score=int(teams.get('away', {}).get('score', 0)),
             line=gm_info.get('lne'),
-            over_under=float(gm_info.get('ovUnd', 0))
+            over_under=float(gm_info.get('ovUnd', 0)),
         )
 
 
@@ -292,13 +293,18 @@ class ScheduleService(BaseService):
             away_team_name=away_team[0].get('displayName'),
             game_date=event.get('date'),
             year=event.get('season', {}).get('year', 0),
-            game_type=event.get('season', {}).get('type', 0)
+            game_type=event.get('season', {}).get('type', 0),
         )
 
-    def get_schedule(self, *, week: int = 0, year: int = 0,
-                     game_type: int = 0,
-                     date: str | None = None,
-                     group: str | None = None) -> list[Schedule]:
+    def get_schedule(
+        self,
+        *,
+        week: int = 0,
+        year: int = 0,
+        game_type: int = 0,
+        date: str | None = None,
+        group: str | None = None,
+    ) -> list[Schedule]:
         """
         Retrieves the Schedule information for the week, year, and type
         :keyword week: Week Number

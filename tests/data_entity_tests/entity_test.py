@@ -13,10 +13,7 @@ def test_copy_item():
     """
     game = Game(game_id='12345', home_team='Baltimore', away_team='Kansas City')
     result = game.copy()
-    assert_that(result) \
-        .has_game_id('12345') \
-        .has_home_team('Baltimore') \
-        .has_away_team('Kansas City')
+    assert_that(result).has_game_id('12345').has_home_team('Baltimore').has_away_team('Kansas City')
 
 
 def test_copy_with_update():
@@ -26,14 +23,11 @@ def test_copy_with_update():
 
     game = Game(game_id='12345', home_team='Baltimore', away_team='Kansas City')
 
-    update = {
-        'home_team': 'Pittsburgh'
-    }
+    update = {'home_team': 'Pittsburgh'}
     result = game.copy(update=update)
-    assert_that(result) \
-        .has_game_id('12345') \
-        .has_home_team('Pittsburgh') \
-        .has_away_team('Kansas City')
+    assert_that(result).has_game_id('12345').has_home_team('Pittsburgh').has_away_team(
+        'Kansas City'
+    )
 
 
 def test_copy_item_with_extra_fields():
@@ -42,16 +36,12 @@ def test_copy_item_with_extra_fields():
     """
 
     game = Game(game_id='12345', home_team='Baltimore', away_team='Kansas City')
-    update = {
-        'home_team': 'Pittsburgh',
-        'chicken': 'wing'
-    }
+    update = {'home_team': 'Pittsburgh', 'chicken': 'wing'}
 
     result = game.copy(update=update)
-    assert_that(result) \
-        .has_game_id('12345') \
-        .has_home_team('Pittsburgh') \
-        .has_away_team('Kansas City')
+    assert_that(result).has_game_id('12345').has_home_team('Pittsburgh').has_away_team(
+        'Kansas City'
+    )
 
     assert_that(result.__dict__).does_not_contain_key('chicken')
 
@@ -62,13 +52,9 @@ def test_copy_item_with_none_entries():
     """
 
     game = Game(game_id='12345', home_team='Baltimore', away_team='Kansas City')
-    update = {
-        'home_team': 'Pittsburgh',
-        'away_team': None
-    }
+    update = {'home_team': 'Pittsburgh', 'away_team': None}
 
     result = game.copy(update=update)
-    assert_that(result) \
-        .has_game_id('12345') \
-        .has_home_team('Pittsburgh') \
-        .has_away_team('Kansas City')
+    assert_that(result).has_game_id('12345').has_home_team('Pittsburgh').has_away_team(
+        'Kansas City'
+    )

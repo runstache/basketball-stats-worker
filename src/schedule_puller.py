@@ -1,6 +1,7 @@
 """
 Script for retrieving schedule information
 """
+
 import argparse
 import logging
 import os
@@ -36,11 +37,7 @@ def get_season_types() -> dict:
     Returns the Season Type Hash
     :return: Dictionary
     """
-    return {
-        1: 'preseason',
-        2: 'regular',
-        3: 'postseason'
-    }
+    return {1: 'preseason', 2: 'regular', 3: 'postseason'}
 
 
 def write_output(bucket: str, key: str, records: list[Schedule], session: Session) -> None:
@@ -83,7 +80,7 @@ def make_key(week: int = 0, year: int = 0, season: int = 0, date: str | None = N
             parts.append(str(date_value.year))
         if not week:
             parts.append(str(date_value.isocalendar()[1]))
-        file_name = f"{date}.parquet"
+        file_name = f'{date}.parquet'
 
     if year:
         parts.append(str(year))
@@ -93,13 +90,20 @@ def make_key(week: int = 0, year: int = 0, season: int = 0, date: str | None = N
         parts.append(str(week))
 
     if not file_name:
-        file_name = f"schedule-{uuid.uuid4()}.parquet"
+        file_name = f'schedule-{uuid.uuid4()}.parquet'
     parts.append(file_name)
     return posixpath.join('schedule', *parts)
 
 
-def main(bucket: str, *, week: int = 0, year: int = 0, season: int = 0, group: str | None = None,
-         date: str | None = None) -> None:
+def main(
+    bucket: str,
+    *,
+    week: int = 0,
+    year: int = 0,
+    season: int = 0,
+    group: str | None = None,
+    date: str | None = None,
+) -> None:
     """
     Main Retrieval Function
     :param bucket: S3 Bucket
@@ -139,16 +143,26 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-b', '--bucket', type=str, required=True, help='S3 Bucket')
-    parser.add_argument('-y', '--year', type=int, required=False, default=0,
-                        help='Year of schedule')
-    parser.add_argument('-w', '--week', type=int, required=False, default=0,
-                        help='Week of schedule')
-    parser.add_argument('-s', '--season', type=int, required=False, default=0,
-                        help='Season Type of Schedule')
-    parser.add_argument('-g', '--group', type=str, required=False, default=0,
-                        help='Group Type of Schedule')
+    parser.add_argument(
+        '-y', '--year', type=int, required=False, default=0, help='Year of schedule'
+    )
+    parser.add_argument(
+        '-w', '--week', type=int, required=False, default=0, help='Week of schedule'
+    )
+    parser.add_argument(
+        '-s', '--season', type=int, required=False, default=0, help='Season Type of Schedule'
+    )
+    parser.add_argument(
+        '-g', '--group', type=str, required=False, default=0, help='Group Type of Schedule'
+    )
     parser.add_argument('-d', '--date', type=str, required=False, help='Start Date of Schedule')
     args = parser.parse_args()
 
-    main(args.bucket, week=args.week, year=args.year, season=args.season, group=args.group,
-         date=args.date)
+    main(
+        args.bucket,
+        week=args.week,
+        year=args.year,
+        season=args.season,
+        group=args.group,
+        date=args.date,
+    )

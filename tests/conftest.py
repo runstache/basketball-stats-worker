@@ -4,11 +4,12 @@ Pytest Fixtures
 
 import json
 import os
+
 import pytest
 from boto3 import Session
-
-from services.stats import ScheduleService, TeamService, GameService, PlayerService
 from moto import mock_aws
+
+from services.stats import GameService, PlayerService, ScheduleService, TeamService
 
 
 @pytest.fixture
@@ -17,7 +18,7 @@ def boxscore() -> dict:
     Returns the box score payload
     """
 
-    with open("./tests/test_files/boxscore.json") as input:
+    with open('./tests/test_files/boxscore.json') as input:
         content = json.load(input)
         return content
 
@@ -28,7 +29,7 @@ def schedule() -> dict:
     Returns the Schedule payload
     """
 
-    with open("./tests/test_files/schedule.json") as input:
+    with open('./tests/test_files/schedule.json') as input:
         content = json.load(input)
         return content
 
@@ -39,7 +40,7 @@ def team() -> dict:
     Returns the team payload
     """
 
-    with open("./tests/test_files/team.json") as input:
+    with open('./tests/test_files/team.json') as input:
         content = json.load(input)
         return content
 
