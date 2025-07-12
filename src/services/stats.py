@@ -86,7 +86,7 @@ class BaseService:
 
         for item in items:
             value = item[1]
-            if not value:
+            if not value or not value.isnumeric():
                 value = 0
             stats.append(
                 stat.copy(update={'statistic_name': item[0], 'statistic_value': float(value)})

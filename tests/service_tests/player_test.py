@@ -119,3 +119,13 @@ def test_explode_stat_time(player_service):
     assert_that(
         [x for x in result if x.statistic_name == 'TP' and x.statistic_value == 80]
     ).is_not_empty()
+
+
+def test_extract_string_stat(player_service):
+    """
+    Tests extracting a Stat Value that is a string
+    """
+    stat = PlayerStatistic(1,2023,2,'Bull Dogs', 'Shepherds','PA','Test Stat','TST')
+    result = player_service._explode_stat_(stat, ('TS', 'W1'))
+
+    assert_that(result).extracting('statistic_value').contains_only(0)
