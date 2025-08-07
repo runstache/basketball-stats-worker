@@ -176,6 +176,7 @@ class PlayerService(BaseService):
         for stat in stats:
             athletes = stat.get('athlts', [])
             labels = stat.get('keys', [])
+            stat_type = stat.get('type')
 
             for athlete in athletes:
                 player = athlete.get('athlt', {})
@@ -187,6 +188,7 @@ class PlayerService(BaseService):
                     player_name=player.get('dspNm'),
                     team=team.get('dspNm'),
                     opponent=opponent.get('dspNm'),
+                    statistic_type=stat_type
                 )
                 for stat_value in stat_values:
                     result.extend(self._explode_stat_(item, stat_value))
