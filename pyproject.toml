@@ -8,7 +8,6 @@ dependencies = [
     "polars>=1.23.0",
     "pyarrow>=19.0.1",
     "selenium>=4.29.0",
-    "support"
 
 ]
 
@@ -19,6 +18,8 @@ dev = [
     "mypy>=1.15.0",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
+    "support"
+
 ]
 
 [project.urls]

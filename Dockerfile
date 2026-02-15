@@ -22,11 +22,13 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-dev
 
+COPY ./src /app
+COPY ./packages/support/src/ /app
+
 FROM python:3.14-trixie
 
 RUN apt update -qy && apt upgrade -qyy && apt install chromium-driver -qyy && apt clean
 COPY --from=builder /app /app
-COPY ./src /app
 
 ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
@@ -36,4 +38,4 @@ RUN groupadd -r app && useradd -r -d /app -g app -N app
 USER app
 WORKDIR /app
 
-CMD ["python", "stats-puller.py", "-h"]
+CMD ["python", "stats_puller.py", "-h"]

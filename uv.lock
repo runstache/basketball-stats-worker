@@ -114,7 +114,6 @@ dependencies = [
     { name = "polars" },
     { name = "pyarrow" },
     { name = "selenium" },
-    { name = "support" },
 ]
 
 [package.dev-dependencies]
@@ -124,6 +123,7 @@ dev = [
     { name = "mypy" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "support" },
 ]
 
 [package.metadata]
@@ -133,7 +133,6 @@ requires-dist = [
     { name = "polars", specifier = ">=1.23.0" },
     { name = "pyarrow", specifier = ">=19.0.1" },
     { name = "selenium", specifier = ">=4.29.0" },
-    { name = "support", editable = "packages/support" },
 ]
 
 [package.metadata.requires-dev]
@@ -143,6 +142,7 @@ dev = [
     { name = "mypy", specifier = ">=1.15.0" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
+    { name = "support", editable = "packages/support" },
 ]
 
 [[package]]
