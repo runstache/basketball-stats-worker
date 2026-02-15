@@ -4,7 +4,7 @@ Tests for the schedule service
 
 from assertpy import assert_that
 
-from services.stats import ScheduleService
+from support.services.stats import ScheduleService
 
 
 def test_get_schedule(monkeypatch, schedule, schedule_service):

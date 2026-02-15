@@ -10,7 +10,7 @@ import re
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
-from data.entities import BaseStatistic, Game, PlayerStatistic, Schedule, TeamStatistic
+from support.data.entities import BaseStatistic, Game, PlayerStatistic, Schedule, TeamStatistic
 
 
 class BaseService:

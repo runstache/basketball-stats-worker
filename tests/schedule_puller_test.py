@@ -6,7 +6,7 @@ from assertpy import assert_that
 
 import schedule_puller
 from schedule_puller import ClientError
-from services.stats import ScheduleService
+from support.services.stats import ScheduleService
 
 
 def test_schedule_puller(s3, monkeypatch, schedule, session):

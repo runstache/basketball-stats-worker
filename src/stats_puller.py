@@ -14,9 +14,8 @@ from boto3 import Session
 from botocore.client import BaseClient
 from botocore.exceptions import ClientError
 from polars import DataFrame
-
-from data.entities import Schedule
-from services.stats import GameService, PlayerService, TeamService
+from support.data.entities import Schedule
+from support.services.stats import GameService, PlayerService, TeamService
 
 
 def create_client(session: Session) -> BaseClient:

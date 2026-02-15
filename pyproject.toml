@@ -1,13 +1,15 @@
 [project]
 name = "basketball-stats-worker"
-version = "1.1.3"
-requires-python = ">=3.12.5"
+version = "1.1.4"
+requires-python = "~=3.14.0"
 dependencies = [
     "boto3>=1.36.26",
     "fake-user-agent>=2.3.9",
     "polars>=1.23.0",
     "pyarrow>=19.0.1",
     "selenium>=4.29.0",
+    "support"
+
 ]
 
 [dependency-groups]
@@ -27,7 +29,7 @@ dev = [
 pythonpath="src"
 
 [tool.mypy]
-mypy_path = "src/"
+mypy_path = ["packages", "src"]
 ignore_missing_imports = true
 
 
@@ -117,3 +119,11 @@ docstring-code-format = false
 # This only has an effect when the `docstring-code-format` setting is
 # enabled.
 docstring-code-line-length = "dynamic"
+
+[tool.uv.workspace]
+members = [
+    "packages/support",
+]
+
+[tool.uv.sources]
+support = { workspace = true}

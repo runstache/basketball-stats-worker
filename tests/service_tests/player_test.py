@@ -4,7 +4,7 @@ Tests for extracting the Player Stats
 
 from assertpy import assert_that
 
-from data.entities import PlayerStatistic
+from support.data.entities import PlayerStatistic
 
 
 def test_player_stats(player_service, monkeypatch, boxscore):

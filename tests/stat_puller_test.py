@@ -6,8 +6,8 @@ from assertpy import assert_that
 from polars import DataFrame
 
 import stats_puller
-from data.entities import Schedule
-from services.stats import GameService, PlayerService, TeamService
+from support.data.entities import Schedule
+from support.services.stats import GameService, PlayerService, TeamService
 from stats_puller import ClientError
 
 

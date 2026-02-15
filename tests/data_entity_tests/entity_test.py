@@ -4,7 +4,7 @@ Tests for the Data Entities
 
 from assertpy import assert_that
 
-from data.entities import Game
+from support.data.entities import Game
 
 
 def test_copy_item():

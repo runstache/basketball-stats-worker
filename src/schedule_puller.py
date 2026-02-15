@@ -15,9 +15,8 @@ import polars
 from boto3 import Session
 from botocore.client import BaseClient
 from botocore.exceptions import ClientError
-
-from data.entities import Schedule
-from services.stats import ScheduleService
+from support.data.entities import Schedule
+from support.services.stats import ScheduleService
 
 
 def create_client(session: Session) -> BaseClient:

@@ -9,7 +9,7 @@ import pytest
 from boto3 import Session
 from moto import mock_aws
 
-from services.stats import GameService, PlayerService, ScheduleService, TeamService
+from support.services.stats import GameService, PlayerService, ScheduleService, TeamService
 
 
 @pytest.fixture

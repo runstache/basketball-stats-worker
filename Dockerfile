@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm AS builder
+FROM ghcr.io/astral-sh/uv:python3.14-trixie AS builder
 
 RUN apt update -qy && apt install -qyy \
     -o APT::Install-Recommends=false \
@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-dev
 
-FROM python:3.12-bookworm
+FROM python:3.14-trixie
 
 RUN apt update -qy && apt upgrade -qyy && apt install chromium-driver -qyy && apt clean
 COPY --from=builder /app /app
